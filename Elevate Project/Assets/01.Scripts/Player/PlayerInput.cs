@@ -6,10 +6,12 @@ public class PlayerInput : MonoBehaviour
 {
     public float move { get; private set; }
     public bool jump { get; private set; }
+    public bool interaction { get; private set; }
 
     void Update()
     {
         move = Input.GetAxisRaw("Horizontal");
         jump = Input.GetButtonDown("Jump");
+        interaction = Input.GetKeyDown(KeyCode.H);
     }
 }

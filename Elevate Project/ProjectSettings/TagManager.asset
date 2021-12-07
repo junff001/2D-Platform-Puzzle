@@ -3,15 +3,16 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Ground
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - GROUND
   - Water
   - UI
-  - 
+  - PLAYER
   - 
   - 
   - 
@@ -40,4 +41,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Elevate
+    uniqueID: 3471276793
+    locked: 0
+  - name: ETC
+    uniqueID: 2802165927
+    locked: 0
+  - name: Player
+    uniqueID: 4053638761
     locked: 0

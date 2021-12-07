@@ -6,30 +6,45 @@ public class PlayerController : MonoBehaviour
 {
     PlayerInput input;
     Rigidbody2D rigid;
-    SpriteRenderer sprite;
+
+    // 플레이어 무브 변수
+    private float move; // 캐싱
+    private bool jump; // 캐싱
+    private bool isJump; // on/off
 
     [SerializeField]
     private float moveSpeed = 10f;
     [SerializeField]
     private float jumpPower = 5f;
-    private float move;
-    private bool jump;
-    private bool isJump;
+
+    // 땅 체크 변수
+    [Header("Ground Checking")]
+    private bool isGround;
 
     void Start()
     {
         input = GetComponent<PlayerInput>();
         rigid = GetComponent<Rigidbody2D>();
-        sprite = GetComponent<SpriteRenderer>();
     }
 
     void Update()
     {
+        // PlayerInput 변수 캐싱
         move = input.move;
         jump = input.jump;
-        Move();  // 플레이어 이동
-        Jump();  // 플레이어 점프
-        Filp();  // 스프라이트 뒤집기
+        if (jump) { // Update 와 FixedUpdate 의 생명주기 조율
+            isJump = true;
+        }
+
+        Filp(); // 스프라이트 뒤집기
+    }
+
+    void FixedUpdate()
+    {
+        Move(); // 플레이어 이동
+        Jump(); // 플레이어 점프
+
+        isJump = false;        
     }
 
     private void Move()
@@ -37,23 +52,9 @@ public class PlayerController : MonoBehaviour
         rigid.velocity = new Vector2(move * moveSpeed, rigid.velocity.y);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground")) {
-            isJump = true;
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground")) {
-            isJump = false;
-        }
-    }
-
     private void Jump()
     {
-        if (isJump && jump) {
+        if (isGround && isJump) {
             rigid.velocity = Vector2.zero;
             rigid.AddForce(new Vector2(0, jumpPower), ForceMode2D.Impulse);
         }
@@ -62,9 +63,23 @@ public class PlayerController : MonoBehaviour
     private void Filp()
     {
         if (move > 0) {
-            sprite.flipX = false;
+            transform.localScale = new Vector2(1, transform.localScale.y);
         } else if (move < 0) {
-            sprite.flipX = true;
+            transform.localScale = new Vector2(-1, transform.localScale.y);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground")) {
+            isGround = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground")) {
+            isGround = false;
         }
     }
 }
